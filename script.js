@@ -126,9 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateUI = () => {
         if (appState.isLoggedIn) {
-            document.body.classList.add('logged-in'); // <-- ADD THIS LINE
             DOM.loggedOutView.classList.add('hidden');
             DOM.loggedInView.classList.remove('hidden');
+            if (!isNativeApp()) {
+                DOM.getAppLink.classList.add('hidden'); // <-- Hide when logged in
+            }
             const balance = Number(appState.user.balance).toFixed(2);
             DOM.userPhoneDisplay.textContent = `+${appState.user.phone.slice(0, 3)}...${appState.user.phone.slice(-4)}`;
             DOM.userBalanceDisplay.textContent = `${balance} ETB`;
@@ -136,9 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
             DOM.mainActionBtn.dataset.langKey = 'bet';
             populateSettingsForm();
         } else {
-            document.body.classList.remove('logged-in'); // <-- ADD THIS LINE
             DOM.loggedOutView.classList.remove('hidden');
             DOM.loggedInView.classList.add('hidden');
+            if (!isNativeApp()) {
+                DOM.getAppLink.classList.remove('hidden'); // <-- Show when logged out
+            }
             DOM.mainActionBtn.dataset.langKey = 'play';
         }
         setTimeout(() => {
