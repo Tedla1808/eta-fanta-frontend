@@ -544,6 +544,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 applyTranslations();
             }
         });
+        populateRememberedUser();
+        updateUI();
     };
     
     // ======== APP INITIALIZATION & VERSION CHECK ========
