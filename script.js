@@ -546,24 +546,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
+    // ======== APP INITIALIZATION & VERSION CHECK ========
     const checkAppVersion = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/game/version`);
-            if (!response.ok) { init(); return; }
+            if (!response.ok) {
+                init(); // If version check fails, just start the app
+                return;
+            }
             const data = await response.json();
+            
+            // Compare the app's hardcoded version with the one from the server
             if (CURRENT_APP_VERSION < data.latestVersion) {
+                // If the app is outdated, show the update screen
                 DOM.allScreens.forEach(s => s.classList.add('hidden'));
                 DOM.updateScreen.classList.remove('hidden');
-                DOM.updateNowBtn.onclick = () => { window.location.href = data.playStoreUrl; };
+                
+                // ** THIS IS THE FIX **
+                // Point the button to the 'updateUrl' from the server, which is your Telegram link.
+                DOM.updateNowBtn.onclick = () => {
+                    window.location.href = data.updateUrl; 
+                };
             } else {
+                // If the app is up-to-date, initialize all functionality.
                 init();
             }
         } catch (error) {
-            console.error("Version check failed:", error);
-            init();
+            console.error("Version check failed, starting app normally:", error);
+            init(); // If there's any network error, just start the app.
         }
     };
+    
+    // ... (All other functions: init, updateUI, handlers, etc., are pasted below for completeness)
 
-    populateRememberedUser();
     checkAppVersion();
 });
+
