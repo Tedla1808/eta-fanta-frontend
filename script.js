@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const TOTAL_SLOT_BOXES = 100;
     const COMMISSION_RATES = { slot1: 0.10, slot2: 0.09, slot3: 0.08, slot4: 0.07, slot5: 0.06, slot6: 0.05 };
     const translations = {
-        en: { getApp: 'Get Eta Fanta App', register: 'Register', deposit: 'Deposit', settings: 'Settings', logout: 'Logout', play: 'PLAY', bet: 'BET', contactUs: 'Contact Us', createAccount: 'Create Your Account', userIdPhone: 'User ID (Phone Number)', sendOtp: 'Send OTP', enterVerificationCode: 'Enter Verification Code', setPassword: 'Set Your Password', save: 'Save', login: 'Login', password: 'Password', forgotPassword: 'Forgot password?', rememberMe: 'Remember Me', resetPassword: 'Reset Password', sendNewPassword: 'Send New Password', depositFunds: 'Deposit Funds', depositTo: 'Deposit To:', verifyDeposit: 'I HAVE DEPOSITED', chooseSlot: 'Choose a Slot', amountToBet: 'Amount to Bet:', placeBet: 'Place Bet', recentWinners: 'Recent Winners', done: 'Done', exit: 'Exit', profile: 'Profile', withdrawal: 'Withdrawal', history: 'History', about: 'About', profileSettings: 'Profile Settings', saveChanges: 'Save Changes', manageMethod: 'Manage Withdrawal Method', saveMethod: 'Save Method', reqWithdrawal: 'Request Withdrawal', txHistory: 'Transaction History', aboutApp: 'About Eta Fanta', changePassword: 'Change Password' },
-        am: { getApp: 'መተግበሪያውን ያግኙ', register: 'ይመዝገቡ', deposit: 'ገንዘብ ያስገቡ', settings: 'ቅንብሮች', logout: 'ውጣ', play: 'ይጫወቱ', bet: 'ውርርድ', contactUs: 'ያግኙን', createAccount: 'አካውንት ይፍጠሩ', userIdPhone: 'መለያ (ስልክ ቁጥር)', sendOtp: 'ኮድ ላክ', enterVerificationCode: 'ማረጋገጫ ኮድ ያስገቡ', setPassword: 'የይለፍ ቃል ያዘጋጁ', save: 'አስቀምጥ', login: 'ግባ', password: 'የይለፍ ቃል', forgotPassword: 'የይለፍ ቃል ረስተዋል?', rememberMe: 'አስታውሰኝ', resetPassword: 'የይለፍ ቃል ዳግም ያስጀምሩ', sendNewPassword: 'አዲስ የይለፍ ቃል ላክ', depositFunds: 'ገንዘብ ያስገቡ', depositTo: 'ለዚህ ያስገቡ:', verifyDeposit: 'አስገብቻለሁ', chooseSlot: 'ቁማር ቦታ ይምረጡ', amountToBet: 'የውርርድ መጠን፡', placeBet: 'ውርርድ ያድርጉ', recentWinners: 'የቅርብ ጊዜ አሸናፊዎች', done: 'ተከናውኗል', exit: 'ውጣ', profile: 'መገለጫ', withdrawal: 'ገንዘብ ማውጣት', history: 'ታሪክ', about: 'ስለ', profileSettings: 'የመገለጫ ቅንብሮች', saveChanges: 'ለውጦችን ያስቀምጡ', manageMethod: 'የማውጫ ዘዴ ያቀናብሩ', saveMethod: 'ዘዴ አስቀምጥ', reqWithdrawal: 'ገንዘብ ማውጣት ይጠይቁ', txHistory: 'የግብይት ታሪክ', aboutApp: 'ስለ እጣ ፋንታ', changePassword: 'የይለፍ ቃል ይቀይሩ' },
-        om: { getApp: 'Appilikeeshinii keenya argadhaa', register: 'Galmeessi', deposit: 'Maallaqa Olkaa\'i', settings: 'Qindaa\'inoota', logout: 'Bahi', play: 'Taphadhu', bet: 'Ciibsaa', contactUs: 'Nu qunnami', createAccount: 'Akkaawuntii Uumi', userIdPhone: 'ID fayyadamaa (Lakkoofsa Bilbilaa)', sendOtp: 'OTP Ergi', enterVerificationCode: 'Koodii Mirkaneessaa Galchi', setPassword: 'Jecha Darbeessaa Keessi', save: 'Kuusi', login: 'Seenii', password: 'Jecha Darbeessaa', forgotPassword: 'Jecha darbeessaa irraanfattee?', rememberMe: 'Na Yaadadhu', resetPassword: 'Jecha Darbeessaa Haaromsi', sendNewPassword: 'Jecha Darbeessaa Haaraa Ergi', depositFunds: 'Maallaqa Olkaa\'i', depositTo: 'Gara:', verifyDeposit: 'ANNI OLKAA\'EERA', chooseSlot: 'Iddoo Ciibsaa Filadhu', amountToBet: 'Hanga Ciibsamu:', placeBet: 'Ciibsaa Godhi', recentWinners: 'Mo\'attoota Dhiheenyaa', done: 'Xumurameera', exit: 'Bahi', profile: 'Piroofaayilii', withdrawal: 'Maallaqa Baasuu', history: 'Seenaa', about: 'Waa\'ee', profileSettings: 'Qindaa\'inoota Piroofaayilii', saveChanges: 'Jijjiirama Kuusi', manageMethod: 'Mala Maallaqa Baasuu Bulchi', saveMethod: 'Mala Kuusi', reqWithdrawal: 'Maallaqa Baasuu Gaafadhu', txHistory: 'Seenaa Gurgurtaa', aboutApp: 'Waa\'ee Eta Fanta', changePassword: 'Jecha Darbeessaa Jijjiiri' }
+        en: { register: 'Register', deposit: 'Deposit', settings: 'Settings', logout: 'Logout', play: 'PLAY', bet: 'BET', contactUs: 'Contact Us', createAccount: 'Create Your Account', userIdPhone: 'User ID (Phone Number)', sendOtp: 'Send OTP', enterVerificationCode: 'Enter Verification Code', setPassword: 'Set Your Password', save: 'Save', login: 'Login', password: 'Password', forgotPassword: 'Forgot password?', rememberMe: 'Remember Me', resetPassword: 'Reset Password', sendNewPassword: 'Send New Password', depositFunds: 'Deposit Funds', depositTo: 'Deposit To:', verifyDeposit: 'I HAVE DEPOSITED', chooseSlot: 'Choose a Slot', amountToBet: 'Amount to Bet:', placeBet: 'Place Bet', recentWinners: 'Recent Winners', done: 'Done', exit: 'Exit', profile: 'Profile', withdrawal: 'Withdrawal', history: 'History', about: 'About', profileSettings: 'Profile Settings', saveChanges: 'Save Changes', manageMethod: 'Manage Withdrawal Method', saveMethod: 'Save Method', reqWithdrawal: 'Request Withdrawal', txHistory: 'Transaction History', aboutApp: 'About Eta Fanta', changePassword: 'Change Password' },
+        am: { register: 'ይመዝገቡ', deposit: 'ገንዘብ ያስገቡ', settings: 'ቅንብሮች', logout: 'ውጣ', play: 'ይጫወቱ', bet: 'ውርርድ', contactUs: 'ያግኙን', createAccount: 'አካውንት ይፍጠሩ', userIdPhone: 'መለያ (ስልክ ቁጥር)', sendOtp: 'ኮድ ላክ', enterVerificationCode: 'ማረጋገጫ ኮድ ያስገቡ', setPassword: 'የይለፍ ቃል ያዘጋጁ', save: 'አስቀምጥ', login: 'ግባ', password: 'የይለፍ ቃል', forgotPassword: 'የይለፍ ቃል ረስተዋል?', rememberMe: 'አስታውሰኝ', resetPassword: 'የይለፍ ቃል ዳግም ያስጀምሩ', sendNewPassword: 'አዲስ የይለፍ ቃል ላክ', depositFunds: 'ገንዘብ ያስገቡ', depositTo: 'ለዚህ ያስገቡ:', verifyDeposit: 'አስገብቻለሁ', chooseSlot: 'ቁማር ቦታ ይምረጡ', amountToBet: 'የውርርድ መጠን፡', placeBet: 'ውርርድ ያድርጉ', recentWinners: 'የቅርብ ጊዜ አሸናፊዎች', done: 'ተከናውኗል', exit: 'ውጣ', profile: 'መገለጫ', withdrawal: 'ገንዘብ ማውጣት', history: 'ታሪክ', about: 'ስለ', profileSettings: 'የመገለጫ ቅንብሮች', saveChanges: 'ለውጦችን ያስቀምጡ', manageMethod: 'የማውጫ ዘዴ ያቀናብሩ', saveMethod: 'ዘዴ አስቀምጥ', reqWithdrawal: 'ገንዘብ ማውጣት ይጠይቁ', txHistory: 'የግብይት ታሪክ', aboutApp: 'ስለ እጣ ፋንታ', changePassword: 'የይለፍ ቃል ይቀይሩ' },
+        om: { register: 'Galmeessi', deposit: 'Maallaqa Olkaa\'i', settings: 'Qindaa\'inoota', logout: 'Bahi', play: 'Taphadhu', bet: 'Ciibsaa', contactUs: 'Nu qunnami', createAccount: 'Akkaawuntii Uumi', userIdPhone: 'ID fayyadamaa (Lakkoofsa Bilbilaa)', sendOtp: 'OTP Ergi', enterVerificationCode: 'Koodii Mirkaneessaa Galchi', setPassword: 'Jecha Darbeessaa Keessi', save: 'Kuusi', login: 'Seenii', password: 'Jecha Darbeessaa', forgotPassword: 'Jecha darbeessaa irraanfattee?', rememberMe: 'Na Yaadadhu', resetPassword: 'Jecha Darbeessaa Haaromsi', sendNewPassword: 'Jecha Darbeessaa Haaraa Ergi', depositFunds: 'Maallaqa Olkaa\'i', depositTo: 'Gara:', verifyDeposit: 'ANNI OLKAA\'EERA', chooseSlot: 'Iddoo Ciibsaa Filadhu', amountToBet: 'Hanga Ciibsamu:', placeBet: 'Ciibsaa Godhi', recentWinners: 'Mo\'attoota Dhiheenyaa', done: 'Xumurameera', exit: 'Bahi', profile: 'Piroofaayilii', withdrawal: 'Maallaqa Baasuu', history: 'Seenaa', about: 'Waa\'ee', profileSettings: 'Qindaa\'inoota Piroofaayilii', saveChanges: 'Jijjiirama Kuusi', manageMethod: 'Mala Maallaqa Baasuu Bulchi', saveMethod: 'Mala Kuusi', reqWithdrawal: 'Maallaqa Baasuu Gaafadhu', txHistory: 'Seenaa Gurgurtaa', aboutApp: 'Waa\'ee Eta Fanta', changePassword: 'Jecha Darbeessaa Jijjiiri' }
     };
     const DOM = {
         mainActionBtn: document.getElementById('main-action-btn'),
@@ -86,11 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateNowBtn: document.getElementById('update-now-btn'),
         rememberMeCheck: document.getElementById('remember-me-check'),
         countryCodeLogin: document.getElementById('country-code-login'),
-        getAppLink: document.getElementById('get-app-link'), // <-- ADD THIS SELECTOR
     };
     let registrationPhone = '';
 
-    const isNativeApp = () => { return !!window.Capacitor; };
     const showScreen = (id) => { DOM.allScreens.forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); };
     const showModal = (el) => { if (el) el.classList.remove('hidden'); };
     const hideAllModals = () => DOM.allModals.forEach(m => m.classList.add('hidden'));
@@ -128,9 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (appState.isLoggedIn) {
             DOM.loggedOutView.classList.add('hidden');
             DOM.loggedInView.classList.remove('hidden');
-            if (!isNativeApp()) {
-                DOM.getAppLink.classList.add('hidden'); // <-- Hide when logged in
-            }
             const balance = Number(appState.user.balance).toFixed(2);
             DOM.userPhoneDisplay.textContent = `+${appState.user.phone.slice(0, 3)}...${appState.user.phone.slice(-4)}`;
             DOM.userBalanceDisplay.textContent = `${balance} ETB`;
@@ -140,9 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             DOM.loggedOutView.classList.remove('hidden');
             DOM.loggedInView.classList.add('hidden');
-            if (!isNativeApp()) {
-                DOM.getAppLink.classList.remove('hidden'); // <-- Show when logged out
-            }
             DOM.mainActionBtn.dataset.langKey = 'play';
         }
         setTimeout(() => {
@@ -270,9 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const init = () => {
-        if (!isNativeApp()) {
-            DOM.getAppLink.classList.remove('hidden');
-        }
         DOM.logoLink.addEventListener('click', (e) => { e.preventDefault(); hideAllModals(); showScreen('home-screen'); });
         DOM.mainActionBtn.addEventListener('click', () => { if (appState.isLoggedIn) { showScreen('betting-screen'); fetchSlotData(); fetchAndRenderWinners(); } else { showModal(DOM.loginModal); } });
         DOM.registerBtnHeader.addEventListener('click', () => { showModal(DOM.registerModal); DOM.registerStep1.classList.remove('hidden'); DOM.registerStep1b.classList.add('hidden'); DOM.registerStep2.classList.add('hidden'); DOM.registerStep3.classList.add('hidden'); });
@@ -555,8 +544,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 applyTranslations();
             }
         });
-         populateRememberedUser();
-        updateUI();
     };
     
     const checkAppVersion = async () => {
