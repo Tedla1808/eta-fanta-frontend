@@ -1,94 +1,27 @@
-// --- START OF FILE script.js --- (COMPLETE, CORRECTED, AND FULLY FUNCTIONAL)
+// --- START OF FILE script.js --- (FINAL, WITH SLOT RE-MAPPING LOGIC)
 
 document.addEventListener('DOMContentLoaded', () => {
     // ======== GLOBAL STATE & CONSTANTS ========
     const CURRENT_APP_VERSION = '1.0.0'; 
-    const appState = { isLoggedIn: false, user: null, language: 'en', isBiometricAvailable: false, betting: { slotsData: {}, selections: {} } };
+    const appState = { isLoggedIn: false, user: null, language: 'en', betting: { slotsData: {}, selections: {} } };
     const API_BASE_URL = 'https://eta-fanta-apk-01.onrender.com';
     const socket = io(API_BASE_URL);
     const TOTAL_SLOT_BOXES = 100;
-    const COMMISSION_RATES = { slot1: 0.10, slot2: 0.09, slot3: 0.08, slot4: 0.07, slot5: 0.06, slot6: 0.05 };
+    const COMMISSION_RATES = {
+        'slot0.9': 0.11, 'slot1': 0.10, 'slot2': 0.09, 'slot3': 0.08, 
+        'slot4': 0.07, 'slot5': 0.06, 'slot6': 0.05, 'slot7': 0.04
+    };
     const translations = {
-        en: { register: 'Register', deposit: 'Deposit', settings: 'Settings', logout: 'Logout', play: 'PLAY', bet: 'BET', contactUs: 'Contact Us', createAccount: 'Create Your Account', userIdPhone: 'User ID (Phone Number)', sendOtp: 'Send OTP', enterVerificationCode: 'Enter Verification Code', setPassword: 'Set Your Password', save: 'Save', login: 'Login', password: 'Password', forgotPassword: 'Forgot password?', rememberMe: 'Remember Me', resetPassword: 'Reset Password', sendNewPassword: 'Send New Password', depositFunds: 'Deposit Funds', depositTo: 'Deposit To:', verifyDeposit: 'I HAVE DEPOSITED', chooseSlot: 'Choose a Slot', amountToBet: 'Amount to Bet:', placeBet: 'Place Bet', recentWinners: 'Recent Winners', done: 'Done', exit: 'Exit', profile: 'Profile', withdrawal: 'Withdrawal', history: 'History', about: 'About', profileSettings: 'Profile Settings', saveChanges: 'Save Changes', manageMethod: 'Manage Withdrawal Method', saveMethod: 'Save Method', reqWithdrawal: 'Request Withdrawal', txHistory: 'Transaction History', aboutApp: 'About Eta Fanta', changePassword: 'Change Password', getApp: 'Get Eta Fanta App' },
-        am: { register: 'ይመዝገቡ', deposit: 'ገንዘብ ያስገቡ', settings: 'ቅንብሮች', logout: 'ውጣ', play: 'ይጫወቱ', bet: 'ውርርድ', contactUs: 'ያግኙን', createAccount: 'አካውንት ይፍጠሩ', userIdPhone: 'መለያ (ስልክ ቁጥር)', sendOtp: 'ኮድ ላክ', enterVerificationCode: 'ማረጋገጫ ኮድ ያስገቡ', setPassword: 'የይለፍ ቃል ያዘጋጁ', save: 'አስቀምጥ', login: 'ግባ', password: 'የይለፍ ቃል', forgotPassword: 'የይለፍ ቃል ረስተዋል?', rememberMe: 'አስታውሰኝ', resetPassword: 'የይለፍ ቃል ዳግም ያስጀምሩ', sendNewPassword: 'አዲስ የይለፍ ቃል ላክ', depositFunds: 'ገንዘብ ያስገቡ', depositTo: 'ለዚህ ያስገቡ:', verifyDeposit: 'አስገብቻለሁ', chooseSlot: 'ቁማር ቦታ ይምረጡ', amountToBet: 'የውርርድ መጠን፡', placeBet: 'ውርርድ ያድርጉ', recentWinners: 'የቅርብ ጊዜ አሸናፊዎች', done: 'ተከናውኗል', exit: 'ውጣ', profile: 'መገለጫ', withdrawal: 'ገንዘብ ማውጣት', history: 'ታሪክ', about: 'ስለ', profileSettings: 'የመገለጫ ቅንብሮች', saveChanges: 'ለውጦችን ያስቀምጡ', manageMethod: 'የማውጫ ዘዴ ያቀናብሩ', saveMethod: 'ዘዴ አስቀምጥ', reqWithdrawal: 'ገንዘብ ማውጣት ይጠይቁ', txHistory: 'የግብይት ታሪክ', aboutApp: 'ስለ እጣ ፋንታ', changePassword: 'የይለፍ ቃል ይቀይሩ', getApp: 'መተግበሪያውን ያግኙ' },
-        om: { register: 'Galmeessi', deposit: 'Maallaqa Olkaa\'i', settings: 'Qindaa\'inoota', logout: 'Bahi', play: 'Taphadhu', bet: 'Ciibsaa', contactUs: 'Nu qunnami', createAccount: 'Akkaawuntii Uumi', userIdPhone: 'ID fayyadamaa (Lakkoofsa Bilbilaa)', sendOtp: 'OTP Ergi', enterVerificationCode: 'Koodii Mirkaneessaa Galchi', setPassword: 'Jecha Darbeessaa Keessi', save: 'Kuusi', login: 'Seenii', password: 'Jecha Darbeessaa', forgotPassword: 'Jecha darbeessaa irraanfattee?', rememberMe: 'Na Yaadadhu', resetPassword: 'Jecha Darbeessaa Haaromsi', sendNewPassword: 'Jecha Darbeessaa Haaraa Ergi', depositFunds: 'Maallaqa Olkaa\'i', depositTo: 'Gara:', verifyDeposit: 'ANNI OLKAA\'EERA', chooseSlot: 'Iddoo Ciibsaa Filadhu', amountToBet: 'Hanga Ciibsamu:', placeBet: 'Ciibsaa Godhi', recentWinners: 'Mo\'attoota Dhiheenyaa', done: 'Xumurameera', exit: 'Bahi', profile: 'Piroofaayilii', withdrawal: 'Maallaqa Baasuu', history: 'Seenaa', about: 'Waa\'ee', profileSettings: 'Qindaa\'inoota Piroofaayilii', saveChanges: 'Jijjiirama Kuusi', manageMethod: 'Mala Maallaqa Baasuu Bulchi', saveMethod: 'Mala Kuusi', reqWithdrawal: 'Maallaqa Baasuu Gaafadhu', txHistory: 'Seenaa Gurgurtaa', aboutApp: 'Waa\'ee Eta Fanta', changePassword: 'Jecha Darbeessaa Jijjiiri',getApp: 'Appilikeeshinii keenya argadhaa' }
+        en: { getApp: 'Get Eta Fanta App', register: 'Register', deposit: 'Deposit', settings: 'Settings', logout: 'Logout', play: 'PLAY', bet: 'BET', contactUs: 'Contact Us', createAccount: 'Create Your Account', userIdPhone: 'User ID (Phone Number)', sendOtp: 'Send OTP', enterVerificationCode: 'Enter Verification Code', setPassword: 'Set Your Password', save: 'Save', login: 'Login', password: 'Password', forgotPassword: 'Forgot password?', rememberMe: 'Remember Me', resetPassword: 'Reset Password', sendNewPassword: 'Send New Password', depositFunds: 'Deposit Funds', depositTo: 'Deposit To:', verifyDeposit: 'I HAVE DEPOSITED', chooseSlot: 'Choose a Slot', amountToBet: 'Amount to Bet:', placeBet: 'Place Bet', recentWinners: 'Recent Winners', done: 'Done', exit: 'Exit', profile: 'Profile', withdrawal: 'Withdrawal', history: 'History', about: 'About', profileSettings: 'Profile Settings', saveChanges: 'Save Changes', manageMethod: 'Manage Withdrawal Method', saveMethod: 'Save Method', reqWithdrawal: 'Request Withdrawal', txHistory: 'Transaction History', aboutApp: 'About Eta Fanta', changePassword: 'Change Password' },
+        am: { getApp: 'መተግበሪያውን ያግኙ', register: 'ይመዝገቡ', deposit: 'ገንዘብ ያስገቡ', settings: 'ቅንብሮች', logout: 'ውጣ', play: 'ይጫወቱ', bet: 'ውርርድ', contactUs: 'ያግኙን', createAccount: 'አካውንት ይፍጠሩ', userIdPhone: 'መለያ (ስልክ ቁጥር)', sendOtp: 'ኮድ ላክ', enterVerificationCode: 'ማረጋገጫ ኮድ ያስገቡ', setPassword: 'የይለፍ ቃል ያዘጋጁ', save: 'አስቀምጥ', login: 'ግባ', password: 'የይለፍ ቃል', forgotPassword: 'የይለፍ ቃል ረስተዋል?', rememberMe: 'አስታውሰኝ', resetPassword: 'የይለፍ ቃል ዳግም ያስጀምሩ', sendNewPassword: 'አዲስ የይለፍ ቃል ላክ', depositFunds: 'ገንዘብ ያስገቡ', depositTo: 'ለዚህ ያስገቡ:', verifyDeposit: 'አስገብቻለሁ', chooseSlot: 'ቁማር ቦታ ይምረጡ', amountToBet: 'የውርርድ መጠን፡', placeBet: 'ውርርድ ያድርጉ', recentWinners: 'የቅርብ ጊዜ አሸናፊዎች', done: 'ተከናውኗል', exit: 'ውጣ', profile: 'መገለጫ', withdrawal: 'ገንዘብ ማውጣት', history: 'ታሪክ', about: 'ስለ', profileSettings: 'የመገለጫ ቅንብሮች', saveChanges: 'ለውጦችን ያስቀምጡ', manageMethod: 'የማውጫ ዘዴ ያቀናብሩ', saveMethod: 'ዘዴ አስቀምጥ', reqWithdrawal: 'ገንዘብ ማውጣት ይጠይቁ', txHistory: 'የግብይት ታሪክ', aboutApp: 'ስለ እጣ ፋንታ', changePassword: 'የይለፍ ቃል ይቀይሩ' },
+        om: { getApp: 'Appilikeeshinii keenya argadhaa', register: 'Galmeessi', deposit: 'Maallaqa Olkaa\'i', settings: 'Qindaa\'inoota', logout: 'Bahi', play: 'Taphadhu', bet: 'Ciibsaa', contactUs: 'Nu qunnami', createAccount: 'Akkaawuntii Uumi', userIdPhone: 'ID fayyadamaa (Lakkoofsa Bilbilaa)', sendOtp: 'OTP Ergi', enterVerificationCode: 'Koodii Mirkaneessaa Galchi', setPassword: 'Jecha Darbeessaa Keessi', save: 'Kuusi', login: 'Seenii', password: 'Jecha Darbeessaa', forgotPassword: 'Jecha darbeessaa irraanfattee?', rememberMe: 'Na Yaadadhu', resetPassword: 'Jecha Darbeessaa Haaromsi', sendNewPassword: 'Jecha Darbeessaa Haaraa Ergi', depositFunds: 'Maallaqa Olkaa\'i', depositTo: 'Gara:', verifyDeposit: 'ANNI OLKAA\'EERA', chooseSlot: 'Iddoo Ciibsaa Filadhu', amountToBet: 'Hanga Ciibsamu:', placeBet: 'Ciibsaa Godhi', recentWinners: 'Mo\'attoota Dhiheenyaa', done: 'Xumurameera', exit: 'Bahi', profile: 'Piroofaayilii', withdrawal: 'Maallaqa Baasuu', history: 'Seenaa', about: 'Waa\'ee', profileSettings: 'Qindaa\'inoota Piroofaayilii', saveChanges: 'Jijjiirama Kuusi', manageMethod: 'Mala Maallaqa Baasuu Bulchi', saveMethod: 'Mala Kuusi', reqWithdrawal: 'Maallaqa Baasuu Gaafadhu', txHistory: 'Seenaa Gurgurtaa', aboutApp: 'Waa\'ee Eta Fanta', changePassword: 'Jecha Darbeessaa Jijjiiri' }
     };
     const DOM = {
-        mainActionBtn: document.getElementById('main-action-btn'),
-        allScreens: document.querySelectorAll('.app-screen'),
-        allModals: document.querySelectorAll('.modal-overlay'),
-        loggedOutView: document.getElementById('logged-out-view'),
-        loggedInView: document.getElementById('logged-in-view'),
-        userPhoneDisplay: document.getElementById('user-phone-display'),
-        userBalanceDisplay: document.getElementById('user-balance-display'),
-        registerBtnHeader: document.getElementById('register-btn-header'),
-        depositBtn: document.getElementById('deposit-btn'),
-        settingsBtn: document.getElementById('settings-btn'),
-        logoutBtn: document.getElementById('logout-btn'),
-        logoLink: document.getElementById('logo-link'),
-        registerModal: document.getElementById('register-modal'),
-        loginModal: document.getElementById('login-modal'),
-        forgotPasswordModal: document.getElementById('forgot-password-modal'),
-        depositModal: document.getElementById('deposit-modal'),
-        depositVerificationModal: document.getElementById('deposit-verification-modal'),
-        bettingGridModal: document.getElementById('betting-grid-modal'),
-        settingsModal: document.getElementById('settings-modal'),
-        settingsTabs: document.querySelector('.settings-tabs'),
-        settingsContent: document.querySelectorAll('.settings-content .tab-content'),
-        transactionHistoryTableBody: document.getElementById('transaction-history-table-body'),
-        iHaveDepositedBtn: document.getElementById('i-have-deposited-btn'),
-        verifyDepositBtn: document.getElementById('verify-deposit-btn'),
-        depositorPhoneInput: document.getElementById('depositor-phone-input'),
-        depositAmountInput: document.getElementById('deposit-amount-input'),
-        loginBtnModal: document.getElementById('login-btn-modal'),
-        phoneLoginInput: document.getElementById('phone-login'),
-        togglePasswordIcon: document.getElementById('toggle-password'),
-        passwordLoginInput: document.getElementById('password-login'),
-        slotsContainer: document.querySelector('.slots-container'),
-        bettingGridContainer: document.getElementById('betting-grid-container'),
-        bettingGridTitle: document.getElementById('betting-grid-title'),
-        totalBetAmountEl: document.getElementById('total-bet-amount'),
-        placeBetBtn: document.getElementById('place-bet-btn'),
-        clearBetBtn: document.getElementById('clear-bet-btn'),
-        registerStep1: document.getElementById('register-step-1'),
-        registerStep1b: document.getElementById('register-step-1b'),
-        registerStep2: document.getElementById('register-step-2'),
-        registerStep3: document.getElementById('register-step-3'),
-        continueToTelegramBtn: document.getElementById('continue-to-telegram-btn'),
-        phoneRegisterInput: document.getElementById('phone-register'),
-        countryCodeRegister: document.getElementById('country-code-register'),
-        checkTelegramBtn: document.getElementById('check-telegram-btn'),
-        otpInput: document.getElementById('otp-input'),
-        verifyOtpBtn: document.getElementById('verify-otp-btn'),
-        passwordRegisterInput: document.getElementById('password-register'),
-        confirmPasswordRegisterInput: document.getElementById('confirm-password-register'),
-        passwordError: document.getElementById('password-error'),
-        savePasswordBtn: document.getElementById('save-password-btn'),
-        changePasswordBtn: document.getElementById('change-password-btn'),
-        currentPasswordInput: document.getElementById('current-password'),
-        newPasswordInput: document.getElementById('new-password'),
-        confirmNewPasswordInput: document.getElementById('confirm-new-password'),
-        changePasswordError: document.getElementById('change-password-error'),
-        withdrawalAccountNameInput: document.getElementById('withdrawal-account-name'),
-        withdrawalAccountPhoneInput: document.getElementById('withdrawal-account-phone'),
-        withdrawalProviderSelect: document.getElementById('withdrawal-provider'),
-        saveWithdrawalMethodBtn: document.getElementById('save-withdrawal-method-btn'),
-        fullNameInput: document.getElementById('full-name-input'),
-        saveProfileBtn: document.getElementById('save-profile-btn'),
-        goToRegisterLink: document.getElementById('go-to-register-link'),
-        forgotPasswordLink: document.getElementById('forgot-password-link'),
-        sendNewPasswordBtn: document.getElementById('send-new-password-btn'),
-        withdrawalBalance: document.getElementById('withdrawal-balance'),
-        withdrawalAmountInput: document.getElementById('withdrawal-amount-input'),
-        requestWithdrawalBtn: document.getElementById('request-withdrawal-btn'),
-        recentWinnersList: document.getElementById('recent-winners-list'),
-        updateScreen: document.getElementById('update-screen'),
-        updateNowBtn: document.getElementById('update-now-btn'),
-        rememberMeCheck: document.getElementById('remember-me-check'),
-        countryCodeLogin: document.getElementById('country-code-login'),
+        mainActionBtn: document.getElementById('main-action-btn'), allScreens: document.querySelectorAll('.app-screen'), allModals: document.querySelectorAll('.modal-overlay'), loggedOutView: document.getElementById('logged-out-view'), loggedInView: document.getElementById('logged-in-view'), userPhoneDisplay: document.getElementById('user-phone-display'), userBalanceDisplay: document.getElementById('user-balance-display'), registerBtnHeader: document.getElementById('register-btn-header'), depositBtn: document.getElementById('deposit-btn'), settingsBtn: document.getElementById('settings-btn'), logoutBtn: document.getElementById('logout-btn'), logoLink: document.getElementById('logo-link'), registerModal: document.getElementById('register-modal'), loginModal: document.getElementById('login-modal'), forgotPasswordModal: document.getElementById('forgot-password-modal'), depositModal: document.getElementById('deposit-modal'), depositVerificationModal: document.getElementById('deposit-verification-modal'), bettingGridModal: document.getElementById('betting-grid-modal'), settingsModal: document.getElementById('settings-modal'), settingsTabs: document.querySelector('.settings-tabs'), settingsContent: document.querySelectorAll('.settings-content .tab-content'), transactionHistoryTableBody: document.getElementById('transaction-history-table-body'), iHaveDepositedBtn: document.getElementById('i-have-deposited-btn'), verifyDepositBtn: document.getElementById('verify-deposit-btn'), depositorPhoneInput: document.getElementById('depositor-phone-input'), depositAmountInput: document.getElementById('deposit-amount-input'), loginBtnModal: document.getElementById('login-btn-modal'), phoneLoginInput: document.getElementById('phone-login'), togglePasswordIcon: document.getElementById('toggle-password'), passwordLoginInput: document.getElementById('password-login'), slotsContainer: document.querySelector('.slots-container'), bettingGridContainer: document.getElementById('betting-grid-container'), bettingGridTitle: document.getElementById('betting-grid-title'), totalBetAmountEl: document.getElementById('total-bet-amount'), placeBetBtn: document.getElementById('place-bet-btn'), clearBetBtn: document.getElementById('clear-bet-btn'), registerStep1: document.getElementById('register-step-1'), registerStep1b: document.getElementById('register-step-1b'), registerStep2: document.getElementById('register-step-2'), registerStep3: document.getElementById('register-step-3'), continueToTelegramBtn: document.getElementById('continue-to-telegram-btn'), phoneRegisterInput: document.getElementById('phone-register'), countryCodeRegister: document.getElementById('country-code-register'), checkTelegramBtn: document.getElementById('check-telegram-btn'), otpInput: document.getElementById('otp-input'), verifyOtpBtn: document.getElementById('verify-otp-btn'), passwordRegisterInput: document.getElementById('password-register'), confirmPasswordRegisterInput: document.getElementById('confirm-password-register'), passwordError: document.getElementById('password-error'), savePasswordBtn: document.getElementById('save-password-btn'), changePasswordBtn: document.getElementById('change-password-btn'), currentPasswordInput: document.getElementById('current-password'), newPasswordInput: document.getElementById('new-password'), confirmNewPasswordInput: document.getElementById('confirm-new-password'), changePasswordError: document.getElementById('change-password-error'), withdrawalAccountNameInput: document.getElementById('withdrawal-account-name'), withdrawalAccountPhoneInput: document.getElementById('withdrawal-account-phone'), withdrawalProviderSelect: document.getElementById('withdrawal-provider'), saveWithdrawalMethodBtn: document.getElementById('save-withdrawal-method-btn'), fullNameInput: document.getElementById('full-name-input'), saveProfileBtn: document.getElementById('save-profile-btn'), goToRegisterLink: document.getElementById('go-to-register-link'), forgotPasswordLink: document.getElementById('forgot-password-link'), sendNewPasswordBtn: document.getElementById('send-new-password-btn'), withdrawalBalance: document.getElementById('withdrawal-balance'), withdrawalAmountInput: document.getElementById('withdrawal-amount-input'), requestWithdrawalBtn: document.getElementById('request-withdrawal-btn'), recentWinnersList: document.getElementById('recent-winners-list'), updateScreen: document.getElementById('update-screen'), updateNowBtn: document.getElementById('update-now-btn'), rememberMeCheck: document.getElementById('remember-me-check'), countryCodeLogin: document.getElementById('country-code-login'), getAppLink: document.getElementById('get-app-link'),
     };
     let registrationPhone = '';
 
+    const isNativeApp = () => !!window.Capacitor;
     const showScreen = (id) => { DOM.allScreens.forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); };
     const showModal = (el) => { if (el) el.classList.remove('hidden'); };
     const hideAllModals = () => DOM.allModals.forEach(m => m.classList.add('hidden'));
@@ -126,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (appState.isLoggedIn) {
             DOM.loggedOutView.classList.add('hidden');
             DOM.loggedInView.classList.remove('hidden');
+            DOM.getAppLink.classList.add('hidden');
             const balance = Number(appState.user.balance).toFixed(2);
             DOM.userPhoneDisplay.textContent = `+${appState.user.phone.slice(0, 3)}...${appState.user.phone.slice(-4)}`;
             DOM.userBalanceDisplay.textContent = `${balance} ETB`;
@@ -135,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             DOM.loggedOutView.classList.remove('hidden');
             DOM.loggedInView.classList.add('hidden');
+            if (!isNativeApp()) {
+                DOM.getAppLink.classList.remove('hidden');
+            } else {
+                DOM.getAppLink.classList.add('hidden');
+            }
             DOM.mainActionBtn.dataset.langKey = 'play';
         }
         setTimeout(() => {
@@ -144,19 +83,35 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateSlotDisplay = () => {
-        if (!appState.betting.slotsData || Object.keys(appState.betting.slotsData).length === 0) return;
-        document.querySelectorAll('.slot-btn').forEach(btn => {
-            const slotId = `slot${btn.dataset.slotId}`;
-            const slotData = appState.betting.slotsData[slotId];
+        if (!appState.betting.slotsData) return;
+        
+        const slotDisplayOrder = [
+            { id: '0.9', title: 'Slot 1' }, { id: '1', title: 'Slot 2' },
+            { id: '2', title: 'Slot 3' }, { id: '3', title: 'Slot 4' },
+            { id: '4', title: 'Slot 5' }, { id: '5', title: 'Slot 6' },
+            { id: '6', title: 'Slot 7' }, { id: '7', title: 'Slot 8' }
+        ];
+
+        slotDisplayOrder.forEach(slotInfo => {
+            const btn = document.querySelector(`.slot-btn[data-slot-id="${slotInfo.id}"]`);
+            if (!btn) return;
+
+            const internalSlotId = `slot${slotInfo.id}`;
+            const slotData = appState.betting.slotsData[internalSlotId];
+            
             if (slotData) {
                 const winAmountEl = btn.querySelector('.slot-win-amount');
                 const titleEl = btn.querySelector('.slot-title');
                 const fullnessEl = btn.querySelector('.slot-fullness-display');
+                const betCostEl = btn.querySelector('.slot-bet-cost');
+
                 const totalJackpot = slotData.cost * TOTAL_SLOT_BOXES;
-                const commissionRate = COMMISSION_RATES[slotId] || 0;
+                const commissionRate = COMMISSION_RATES[internalSlotId] || 0;
                 const displayedWinAmount = totalJackpot - (totalJackpot * commissionRate);
+
                 winAmountEl.textContent = `WIN ${displayedWinAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} ETB`;
-                titleEl.textContent = `Slot ${btn.dataset.slotId}`;
+                titleEl.textContent = slotInfo.title;
+                betCostEl.textContent = `Bet ${slotData.cost.toFixed(2)} ETB`;
                 fullnessEl.textContent = `${slotData.percentage}% Full`;
             }
         });
@@ -238,9 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             winners.forEach(winner => {
-                if (!winner.user) return;
+                if (!winner.user || !winner.user.phone) return;
                 const phone = winner.user.phone;
-                const obfuscatedPhone = `${phone.slice(0, 3)}...${phone.slice(-4)}`;
+                const obfuscatedPhone = `${phone.slice(0, 3)}...${phone.slice(-2)}`;
                 const listItem = document.createElement('li');
                 listItem.textContent = `${obfuscatedPhone} won ${winner.prizeAmount.toFixed(2)} ETB on ${winner.slotId.replace('slot', 'Slot ')}!`;
                 DOM.recentWinnersList.appendChild(listItem);
@@ -262,6 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const init = () => {
+        if (!isNativeApp()) {
+            DOM.getAppLink.classList.remove('hidden');
+        }
+
         DOM.logoLink.addEventListener('click', (e) => { e.preventDefault(); hideAllModals(); showScreen('home-screen'); });
         DOM.mainActionBtn.addEventListener('click', () => { if (appState.isLoggedIn) { showScreen('betting-screen'); fetchSlotData(); fetchAndRenderWinners(); } else { showModal(DOM.loginModal); } });
         DOM.registerBtnHeader.addEventListener('click', () => { showModal(DOM.registerModal); DOM.registerStep1.classList.remove('hidden'); DOM.registerStep1b.classList.add('hidden'); DOM.registerStep2.classList.add('hidden'); DOM.registerStep3.classList.add('hidden'); });
@@ -388,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!accountName || !accountPhone) { return showToast('Please fill in both Account Name and Phone Number.', 'error'); }
             if (!token) { return showToast('Authentication error. Please log in again.', 'error'); }
             try {
-                const response = await fetch(`${API_BASE_URL}/api/user/withdrawal-method`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ accountName, accountPhone, provider }) });
+                const response = await fetch(`${API_BASE_URL}/api/user/withdrawal-method`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accountName, accountPhone, provider }) });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message);
                 if (appState.user) { appState.user.withdrawalMethod = { accountName, accountPhone, provider }; }
@@ -447,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newPassword !== confirmNewPassword) { DOM.changePasswordError.textContent = 'Passwords do not match.'; DOM.changePasswordError.classList.remove('hidden'); return; }
             if (!token) { showToast('Authentication error.', 'error'); return; }
             try {
-                const response = await fetch(`${API_BASE_URL}/api/user/change-password`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ currentPassword, newPassword }), });
+                const response = await fetch(`${API_BASE_URL}/api/user/change-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword, newPassword }), });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message || 'Failed to change password.');
                 showToast(data.message, 'success');
@@ -459,12 +418,13 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.slotsContainer.addEventListener('click', (e) => {
             const slotBtn = e.target.closest('.slot-btn');
             if (!slotBtn) return;
-            const slotId = `slot${slotBtn.dataset.slotId}`;
-            const slotData = appState.betting.slotsData[slotId];
+            const slotId = slotBtn.dataset.slotId; // Use the re-mapped ID
+            const internalSlotId = `slot${slotId}`;
+            const slotData = appState.betting.slotsData[internalSlotId];
             if (!slotData) { showToast('Slot data not loaded.', 'error'); return; }
             DOM.bettingGridTitle.textContent = `${slotBtn.querySelector('.slot-title').textContent} - Bet Grid`;
             DOM.bettingGridContainer.innerHTML = '';
-            DOM.bettingGridContainer.dataset.currentSlot = slotId;
+            DOM.bettingGridContainer.dataset.currentSlot = internalSlotId; // Store the internal ID
             for (let r = 1; r <= 10; r++) {
                 for (let c = 1; c <= 10; c++) {
                     const box = document.createElement('div');
@@ -473,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     box.dataset.boxId = boxId;
                     box.textContent = (r - 1) * 10 + c;
                     if (slotData.unavailableBoxes.includes(boxId)) { box.classList.add('unavailable'); }
-                    else if (appState.betting.selections[slotId]?.includes(boxId)) { box.classList.add('selected'); }
+                    else if (appState.betting.selections[internalSlotId]?.includes(boxId)) { box.classList.add('selected'); }
                     DOM.bettingGridContainer.appendChild(box);
                 }
             }
@@ -482,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.bettingGridContainer.addEventListener('click', (e) => {
             const box = e.target.closest('.grid-box');
             if (!box || box.classList.contains('unavailable')) return;
-            const slotId = DOM.bettingGridContainer.dataset.currentSlot;
+            const slotId = DOM.bettingGridContainer.dataset.currentSlot; // Get internal ID
             const boxId = box.dataset.boxId;
             if (!appState.betting.selections[slotId]) { appState.betting.selections[slotId] = []; }
             const selectionIndex = appState.betting.selections[slotId].indexOf(boxId);
@@ -544,43 +504,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 applyTranslations();
             }
         });
-        populateRememberedUser();
-        updateUI();
     };
     
-    // ======== APP INITIALIZATION & VERSION CHECK ========
     const checkAppVersion = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/game/version`);
-            if (!response.ok) {
-                init(); // If version check fails, just start the app
-                return;
-            }
+            if (!response.ok) { init(); return; }
             const data = await response.json();
-            
-            // Compare the app's hardcoded version with the one from the server
             if (CURRENT_APP_VERSION < data.latestVersion) {
-                // If the app is outdated, show the update screen
                 DOM.allScreens.forEach(s => s.classList.add('hidden'));
                 DOM.updateScreen.classList.remove('hidden');
-                
-                // ** THIS IS THE FIX **
-                // Point the button to the 'updateUrl' from the server, which is your Telegram link.
-                DOM.updateNowBtn.onclick = () => {
-                    window.location.href = data.updateUrl; 
-                };
+                DOM.updateNowBtn.onclick = () => { window.location.href = data.updateUrl; };
             } else {
-                // If the app is up-to-date, initialize all functionality.
                 init();
             }
         } catch (error) {
-            console.error("Version check failed, starting app normally:", error);
-            init(); // If there's any network error, just start the app.
+            console.error("Version check failed:", error);
+            init();
         }
     };
-    
-    // ... (All other functions: init, updateUI, handlers, etc., are pasted below for completeness)
 
+    populateRememberedUser();
     checkAppVersion();
 });
-
