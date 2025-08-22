@@ -528,6 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
             init();
         }
     };
-
+    
+    populateRememberedUser();
     checkAppVersion();
 });
